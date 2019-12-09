@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>嘟嘟侠</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        body{
+            text-align:center;
+        }
+        #clock{
+            position:relative;
+            margin:100px auto;
+            width:500px;
+            height:200px;
+            border:solid #000;
+        }
+        #clock ul{
+            height:65px;
+            overflow:hidden;
+        }
+        #clock li{
+            float:left;
+            width:41px;
+            height:130px;
+            list-style:none;
+        }
+    </style>
+</head>
+<body>
+<div id="clock">
+    <ul>
+        <li class="on">
+            <img src="images/0.png" class="topImg" alt="">
+            <img src="images/1.png" class="botImg" alt="">
+        </li>
+        <li class="on">
+            <img src="images/0.png" class="topImg" alt="">
+            <img src="images/1.png" class="botImg" alt="">
+        </li>
+        <li>
+            <img src="images/d.png" alt="">
+            <img src="images/d.png" alt="">
+        </li>
+        <li class="on">
+            <img src="images/0.png" class="topImg" alt="">
+            <img src="images/1.png" class="botImg" alt="">
+        </li>
+        <li class="on">
+            <img src="images/0.png" class="topImg" alt="">
+            <img src="images/1.png" class="botImg" alt="">
+        </li>
+        <li>
+            <img src="images/d.png" alt="">
+            <img src="images/d.png" alt="">
+        </li>
+        <li class="on">
+            <img src="images/0.png" class="topImg" alt="">
+            <img src="images/1.png" class="botImg" alt="">
+        </li>
+        <li class="on">
+            <img src="images/0.png" class="topImg" alt="">
+            <img src="images/1.png" class="botImg" alt="">
+        </li>
+    </ul>
+</div>
+<script src="./animation.js"></script>
+<script>
+    var oTop = document.getElementsByClassName('topImg');
+    var oBot = document.getElementsByClassName('botImg');
+    var oLi = document.getElementsByClassName('on');
+
+    // 将 0------>9 转换为 00-------->09;
+    function toTwo(num){
+        if(num<10){
+            return '0'+num;
+        }else{
+            return num + '';
+        }
+    }
+    // 每一秒更新时间
+    var timer = setInterval(function(){         // 循环计时器，一秒循环一次
+        var nowTime = new Date;                 // 获取最新的时间
+        var hours = nowTime.getHours();         // 获取最新时间的小时数
+        var minutes = nowTime.getMinutes();     // 获取最新时间的分钟数
+        var seconds = nowTime.getSeconds();     // 获取最新时间的秒钟数
+        var start = toTwo(hours) + toTwo(minutes) + toTwo(seconds);     // 存放小时，分钟，秒钟所组成的字符串
+
+        nowTime.setSeconds(nowTime.getSeconds() +1 );                   // 给原来的时间戳上加上一秒
+        var newSeconds = nowTime.getSeconds();                          // 获取加上一秒后的秒钟数
+        var newStart = toTwo(hours) + toTwo(minutes) + toTwo(newSeconds);   // 存放改变后的小时，分钟，秒钟所组成的字符串
+
+        for(var i=0;i<start.length;i++){        // 遍历原来时间戳的字符串
+            // console.log(start[i]);
+            oTop[i].src = 'images/' + start[i] +'.png';         // 使li标签上半部分与原来的时间戳相对应
+            oBot[i].src = 'images/' + newStart[i] + '.png';     // 使li标签下半部分与改变后的时间戳相对应
+        }
+        for(var i=0;i<oLi.length;i++){
+            if(start[i] !== newStart[i]){       // 如果start[i] 和 newStart[i]不相等，才会滚动
+                (function(i){                   // 使用闭包，存储i值
+                    animation(oLi[i],{
+                        marginTop:-65
+                    },0.5,function(){           // 瞬间回到初始位置，为下一次的 marginTop：-65做准备
+                        this.style.marginTop = 0;
+                        oTop[i].src = 'images/' + newStart[i] + '.png';     // 修改oTop[i]的src
+                    })
+                })(i)
+            }
+        }
+    },1000);
+</script>
+</body>
+</html>
